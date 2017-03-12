@@ -1,7 +1,8 @@
-import copy
 import random
+import copy
+
 class decentAI:
-	
+
 	# check if legal move
 	def legal(self, board):
 		arr = [0, 0, 0, 0, 0, 0, 0]
@@ -11,7 +12,7 @@ class decentAI:
 			else:
 				arr[c] = True
 		return arr
-	
+
 	# check 
 	def check(self, board, player):
 		b = board.getBoard()
@@ -112,14 +113,15 @@ class decentAI:
 				m[c] = m[c] + self.allMoves(replica, player, depth - 1)[c]
 		return m
 
+	# choose move to make
 	def chooseMove(self, board, opp, depth):
-		aMoves = self.allMoves(board, opp, depth) 
+		aMoves = self.allMoves(board, opp, depth)
 		maxScore = max(aMoves)
-		lMoves = self.legal(board)       
+		legalMoves = self.legal(board)
 		arr = []
 
-		for c in range(len(lMoves)):
-			if ((lMoves[c] and maxScore) == aMoves[c]):
+		for c in range(len(legalMoves)):
+			if ((maxScore and legalMoves[c]) == aMoves[c]):
 				arr.append(c)
 
 		if (len(arr) > 1):

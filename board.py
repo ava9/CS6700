@@ -1,4 +1,4 @@
-class Board:
+class board:
 	columns = 0
 	rows = 0
 	array = []
@@ -20,12 +20,11 @@ class Board:
 	def getBoard(self):
 		return self.array
 
-		# check if column is full
+	# check if column is full
 	def colFull(self, col): 
 		if (self.array[col - 1][self.rows - 1] == 0): 
 			return False 
-		else:
-			return True
+		return True
 
 	# check if board is full
 	def boardFull(self): 
@@ -41,8 +40,8 @@ class Board:
 		arr = ['1 2 3 4 5 6 7']
 		n = ""
 
-		for c in range(0, self.columns):
-			for r in range(0, self.rows):
+		for r in range(0, self.rows):
+			for c in range(0, self.columns):
 				if (self.getBoard()[c][r] == -1):
 					n = n + "X "
 				else:
