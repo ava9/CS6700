@@ -1,6 +1,8 @@
 from board import Board
 
 class input:
+
+	# accepted a player's move
 	def move(self, b, player):
 		try:
 			valid = False
@@ -8,7 +10,7 @@ class input:
 			while (valid == False):
 				player = "[O] Player 1: "
 				
-				if player >= 0:
+				if (player >= 0):
 					continue
 				else:
 					p = "[X] Player 2: "
@@ -25,6 +27,8 @@ class input:
 						b.move(player, col)
 						valid = True
 						return True
+
+		# handle invalid input
 		except NameError:
 			print "Please only enter a number"
 

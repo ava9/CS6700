@@ -20,16 +20,21 @@ class Board:
 	def getBoard(self):
 		return self.array
 
-	# insert player move on board
-	def move(self, player, col):
-		c = col - 1
+		# check if column is full
+	def colFull(self, col): 
+		if (self.array[col - 1][self.rows - 1] == 0): 
+			return False 
+		else:
+			return True
 
-		for r in range(0, self.rows):
-			if self.array[c][r] != 0:
+	# check if board is full
+	def boardFull(self): 
+		for c in range(1, self.columns): 
+			if (self.colFull(c)):
 				continue
 			else:
-				self.array[c][r] = player
-				return
+				return False
+		return True
 
 	# update board
 	def update(self):
@@ -38,13 +43,13 @@ class Board:
 
 		for c in range(0, self.columns):
 			for r in range(0, self.rows):
-				if self.getBoard()[c][r] == -1:
+				if (self.getBoard()[c][r] == -1):
 					n = n + "X "
 				else:
-					if self.getBoard()[c][r] == 1:
+					if (self.getBoard()[c][r] == 1):
 						n = n + "O "
 					else:
-						if self.getBoard()[c][r] == 0:
+						if (self.getBoard()[c][r] == 0):
 							n = n + ". "
 						else:
 							continue
@@ -54,21 +59,16 @@ class Board:
 		for s in range(len(arr)):
 			print arr.pop(-1)
 
-	# check if column is full
-	def colFull(self, col): 
-		if self.array[col - 1][self.rows - 1] == 0: 
-			return False 
-		else:
-			return True
+	# insert player move on board
+	def move(self, player, col):
+		c = col - 1
 
-	# check if board is full
-	def boardFull(self): 
-		for c in range(1, self.columns): 
-			if self.colFull(c):
+		for r in range(0, self.rows):
+			if (self.array[c][r] != 0):
 				continue
 			else:
-				return False
-		return True
+				self.array[c][r] = player
+				return
 
 	# check for winner
 	def winner(self, player):
