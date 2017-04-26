@@ -3,6 +3,7 @@ from human import humanInput
 from decentAI import decentAI
 from randomAI import randomAI
 from inorderAI import inorderAI
+from minimaxAI import minimaxAI
 import random
 
 class play:
@@ -27,7 +28,7 @@ class play:
 
 		ai = True
 		if (ai == True):
-			opp = inorderAI()
+			opp = decentAI()
 			depth = 2
 
 		while(self.win == 0):
