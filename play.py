@@ -1,6 +1,9 @@
 from board import board
 from human import humanInput
 from decentAI import decentAI
+from randomAI import randomAI
+from inorderAI import inorderAI
+from minimaxAI import minimaxAI
 import random
 
 class play:
@@ -33,6 +36,7 @@ class play:
 			if (ai == True):
 				if (self.current < 0):
 					print "--------AI's Move-------"
+					#print "sdfsfsf"
 					self.b.move(self.current, opp.chooseMove(self.b, self.current, depth))
 				elif (self.current > 0):
 					valid = self.userInput.move(self.b, self.current)
