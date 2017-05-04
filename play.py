@@ -29,7 +29,11 @@ class play:
 
 		ai = True
 		if (ai == True):
+<<<<<<< HEAD
 			opp = uctAI()
+=======
+			opp = decentAI()
+>>>>>>> 6af96127c3bb788d38cca27ae57bc79e2033c88b
 			depth = 3
 
 		while(self.win == 0):
