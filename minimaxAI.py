@@ -213,7 +213,7 @@ class minimaxAI:
 		
 	def chooseMove(self, board, opp, depth):
 		aMoves = self.minimaxMoves(board, opp, depth) 
-		print aMoves
+		#print aMoves
 		maxScore = max(aMoves)
 		lMoves = self.legal(board)       
 		arr = []
