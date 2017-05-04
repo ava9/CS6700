@@ -26,7 +26,7 @@ class play:
 		ai = True
 		if (ai == True):
 			opp = decentAI()
-			depth = 2
+			depth = 3
 
 		while(self.win == 0):
 			self.b.update()
