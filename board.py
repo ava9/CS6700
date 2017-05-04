@@ -35,7 +35,23 @@ class board:
 				return False
 		return True
 
-	# update board
+	# make board into length 42 string
+	def tostring(self):
+		s = ""
+		for r in range(self.rows):
+			for c in range(self.columns):
+				if (self.getBoard()[c][r] == -1):
+					s = s + "X"
+				elif (self.getBoard()[c][r] == 1):
+					s = s + "O"
+				elif (self.getBoard()[c][r] == 0):
+					s = s + "."
+				else:
+					continue
+		return s                
+            
+        
+    # update board
 	def update(self):
 		arr = ['1 2 3 4 5 6 7']
 		n = ""

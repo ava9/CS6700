@@ -1,7 +1,10 @@
 import copy
 import random
-class minimaxAI:
-	
+class uctAI:
+	uctTree = {} #empty dictionary where keys are length-42 strings of board and value is board value from -1 to 1
+	currnode = ""
+	numsteps = 0
+    
 	# check if legal move
 	def legal(self, board):
 		arr = [0, 0, 0, 0, 0, 0, 0]
@@ -12,7 +15,7 @@ class minimaxAI:
 				arr[c] = True
 		return arr
 	
-	# checks how many three-in-a-rows there are
+	# checks how many three-in-a-rows there are, one board eval function
 	def check(self, board, player):
 		b = board.getBoard()
 		ret = 0
@@ -74,51 +77,64 @@ class minimaxAI:
 					continue
 		return ret
 
-	# get all moves
-	def allMoves(self, board, player, depth):
+	def writeTree(self):
+		with open("uctTree.txt", "wb") as tree_doc:
+			for key in self.uctTree:
+				tree_doc.write(key + "  " + str(self.uctTree[key]) + "\n")
+
+	def uctMoves(self, board, player, depth):
 		m = [0, 0, 0, 0, 0, 0, 0]
-		ret = 0
-		opp = player * -1
-
-		if (board.boardFull() == True):
-			return [0, 0, 0, 0, 0, 0, 0]
-
-		if (depth <= 0):
-			return [0, 0, 0, 0, 0, 0, 0]
-
-		for c in range(board.columns):
-			replica = copy.deepcopy(board)
-			if (not replica.colFull(c+1)):
-				replica.move(player, c+1)
-				ret = self.check(replica, player)
-				m[c] = m[c] + ret #m[c - 1] = m[c - 1] + ret
-			
-			if (replica.winner(player) == player):
-				# arbitrary high number, should test
-				m[c] = 100 #m[c - 1] = 10
-				return m
-
-			for c2 in range(board.columns):
-				if (not replica.colFull(c2+1)):
-					replica.move(opp, c2+1)
-					ret = self.check(replica, opp)
-					m[c] = m[c] - ret #m[c - 1] = m[c - 1] - ret
-
-				if (replica.winner(opp) == opp):
-					# arbitrary high magnitude numbers, should test
-					if c == c2: #then don't do c (because that allows c2 to go on top)
-						m[c] = -99
-					else:
-						m[c] = -99 #m[c - 1] = -9
-						m[c2] = 99 #m[c2 - 1] = -9
-                        #NOTE: not good to break if c = c2, also could be another case where you should block
-						break
-				#m[c] = m[c] + self.allMoves(replica, player, depth - 1)[c]
-                m[c] = m[c] + self.allMoves(replica, player, depth - 1)[c]
-		return m
-
+		nodelist = []
+		
+		replica = copy.deepcopy(board)
+		lMoves = self.legal(board) #all legal moves
+		childlist = []
+		indexlist = []
+		for col in range(board.columns):
+			replica = copy.deepcopy(board) #TODO move this inside loop
+			if lMoves[col]: #meaning it's true
+				replica.move(player, col+1)
+				childlist.append(replica.tostring()) #WRONG, BUG, must append board with the move taken
+				indexlist.append(col)
+				
+		chosenchild = ""
+		chosenindex = 0
+		maxval = -10 #or is there a better value to put this as? min should be -1
+		for ch in childlist:
+			if not ch in self.uctTree: # TODO too deterministic
+				chosenchild = ch
+				chosenindex = indexlist[childlist.index(ch)]
+				break
+			else: #choose node with highest value 
+				if self.uctTree[ch] > maxval:
+					maxval = self.uctTree[ch]
+					chosenchild = ch
+					chosenindex = indexlist[childlist.index(ch)]
+		if chosenchild == "":
+			print "ERROR NO CHILD CHOSEN"
+            
+        #if chosenchild has a value, then just update the move counts, update currnode, propagate back up tree
+        
+		if not chosenchild in self.uctTree:
+			#then add with board eval function
+			self.uctTree[chosenchild] = self.check(board, player) #BUG, doesn't include current move
+        
+        #m[chosenindex] = 1
+		#return m
+		return chosenindex+1
+        
+        
+        
+        #if self.currnode == "":
+        #    .......(7).......(14).......(21).......(28).......(35).......(42)
+        
+		#get all possible (legal) moves
+        #if one hasn't been explored, do that (pick random or in order), random playout or baord eval, add to tree
+        #propagate value back up the tree (update all nodes traversed)
+        
+    
 	def chooseMove(self, board, opp, depth):
-		aMoves = self.allMoves(board, opp, depth) 
+		'''aMoves = self.allMoves(board, opp, depth) 
 		maxScore = max(aMoves)
 		lMoves = self.legal(board)       
 		arr = []
@@ -132,6 +148,6 @@ class minimaxAI:
 			r = random.randint(0, len(arr) - 1)
 			ret = arr[r] + 1
 		else:
-			ret = arr[0] + 1
+			ret = arr[0] + 1'''
 
-		return ret
+		return self.uctMoves(board, opp, depth)

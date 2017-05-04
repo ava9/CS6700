@@ -4,6 +4,7 @@ from decentAI import decentAI
 from randomAI import randomAI
 from inorderAI import inorderAI
 from minimaxAI import minimaxAI
+from uctAI import uctAI
 import random
 
 class play:
@@ -28,8 +29,8 @@ class play:
 
 		ai = True
 		if (ai == True):
-			opp = decentAI()
-			depth = 2
+			opp = uctAI()
+			depth = 3
 
 		while(self.win == 0):
 			self.b.update()
@@ -52,6 +53,9 @@ class play:
 
 		self.b.update()
 		# update print statement to print ai/user won
+		
+		print opp.uctTree
+		opp.writeTree()
 		print"The winner is "
 		print self.win
 
