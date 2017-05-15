@@ -118,4 +118,4 @@ class randomAI:
 		while (lMoves[ret] == False):
 			ret = random.randint(0, board.columns-1)
             
-		return ret
+		return (ret + 1)

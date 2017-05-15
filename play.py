@@ -5,6 +5,7 @@ from randomAI import randomAI
 from inorderAI import inorderAI
 from minimaxAI import minimaxAI
 from uctAI import uctAI
+from uctAIrp import uctAIrp 
 import random
 
 class play:
@@ -29,12 +30,16 @@ class play:
 
 		ai = True
 		if (ai == True):
-			opp = uctAI()
-			opp = decentAI()
+			opp = uctAIrp()
 			depth = 3
-
+			
+		draw = 0	
 		while(self.win == 0):
 			self.b.update()
+			if self.b.boardFull() == True:
+				draw = 1
+				break
+			
 			if (ai == True):
 				if (self.current < 0):
 					print "--------AI's Move-------"
@@ -55,10 +60,13 @@ class play:
 		self.b.update()
 		# update print statement to print ai/user won
 		
-		print opp.uctTree
-		opp.writeTree()
-		print"The winner is "
-		print self.win
+		#print opp.uctTree
+		#opp.writeTree()
+		if draw == 1:
+			print "Draw - No Winner"
+		else:	
+			print"The winner is "
+			print self.win
 
 playAgain = True
 while(playAgain == True):

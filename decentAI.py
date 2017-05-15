@@ -119,7 +119,7 @@ class decentAI:
 		arr = []
 
 		for c in range(len(lMoves)):
-			if ((lMoves[c] and maxScore) == aMoves[c]):
+			if (lMoves[c] and (maxScore == aMoves[c])):
 				arr.append(c)
 
 		if (len(arr) > 1):
@@ -128,5 +128,6 @@ class decentAI:
 			ret = arr[r] + 1
 		else:
 			ret = arr[0] + 1
+			#BUG there is the problem when there are no legal moves
 
 		return ret

@@ -15,6 +15,11 @@ class board:
 
 		for c in range(self.columns):
 			self.array.append([0]*self.rows)
+			
+	def copyBoard(self, inarray):
+		self.array = inarray
+		
+		
 
 	# get board
 	def getBoard(self):
@@ -22,6 +27,7 @@ class board:
 
 	# check if column is full
 	def colFull(self, col): 
+		#print col #DEBUG
 		if (self.array[col - 1][self.rows - 1] == 0): 
 			return False 
 		return True
@@ -50,6 +56,24 @@ class board:
 					continue
 		return s                
             
+	def toboard(self, str):
+		#lol forget the "self" and convert the string to a board
+		newb = [[0 for _ in range(self.rows)] for _ in range(self.columns)]
+		strind = 0
+		if len(str) != 42:
+			print "ERROR string must be length 42"
+        
+		for r in range(self.rows):
+			for c in range(self.columns):
+				if str[strind] == "X":
+					newb[c][r] = -1
+				elif str[strind] == "O":
+					newb[c][r] = 1
+                    
+				strind += 1
+                
+		return newb    
+        
         
     # update board
 	def update(self):
@@ -71,8 +95,8 @@ class board:
 			arr.append(n)
 			n = ""
 
-		#for s in range(len(arr)):
-		#	print arr.pop(-1)
+		for s in range(len(arr)):
+			print arr.pop(-1)
 
 	# insert player move on board
 	def move(self, player, col):

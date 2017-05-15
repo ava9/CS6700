@@ -2,8 +2,9 @@ import copy
 import random
 import math
 from board import board
+import sys
 
-class uctAI:
+class uctAIrp:
 	uctTree = {} #empty dictionary where keys are length-42 strings of board and value is [board value from -1 to 1, # visits to this node]
 	currnode = ""
 	numsteps = 0
@@ -154,9 +155,44 @@ class uctAI:
 			for key in self.uctTree:
 				tree_doc.write(key + "  " + str(self.uctTree[key][0]) + "\n")
 
+	def randomMove(self, Board, player):
+		rng = random.SystemRandom()
+		ret = rng.randint(0, Board.columns-1)
+		lMoves = self.legal(Board)
+		while (lMoves[ret] == False):
+			ret = rng.randint(0, Board.columns-1)         
+		return (ret + 1)
+	
+	
+	def randomPlayout(self, Board, player):
+		myturn = 1
+		currboard = copy.deepcopy(Board)
+		while (currboard.winner(player) + currboard.winner(-1*player) == 0) and (currboard.boardFull() == False) : #so no one has won and not draw yet
+			if myturn == 1:
+				move = self.randomMove(currboard, player)
+				replica = copy.deepcopy(currboard)
+				replica.move(player, move)
+				myturn = 0
+				currboard = copy.deepcopy(replica)
+			else:
+				move = self.randomMove(currboard, -1*player)
+				replica = copy.deepcopy(currboard)
+				replica.move(player, move)
+				myturn = 1
+				currboard = copy.deepcopy(replica)
+		
+		if currboard.boardFull() == True:
+			return 0 #because draw
+		elif currboard.winner(player) == player:
+			return 1
+		elif currboard.winner(-1*player) == (-1*player):
+			return -1
+		else:
+			print "ERROR SOMEONE HAS TO WIN OR BOARD FULL"
+	
 	def uctMoves(self, Board, player, depth):
 		#try this, new tree each time
-		self.uctTree = {}
+		#self.uctTree = {}
 		#
 		nodelist = []
 		nodelist.append(Board.tostring())
@@ -169,7 +205,7 @@ class uctAI:
 		replica = copy.deepcopy(Board)
 		
 		iters = 0
-		while (iters < 220):
+		while (iters < 1995):
 			#if nodelist has odd length, look for upper bound, else look for lower bound
 			#print currboard.columns #DEBUG 
 			lMoves = self.legal(currboard) #all legal moves
@@ -245,14 +281,15 @@ class uctAI:
 				newboard.copyBoard(Board.toboard(chosenchild))
 				normQval = 0
 				
-				#check if board is win state or lose state, else use board eval function
+				#check if board is win state or lose state, else use do RANDOM PLAYOUT
 				if (newboard.winner(player) == player):
 					normQval = 1
 				elif (newboard.winner((-1)*player) == (-1)*player):
 					normQval = -1
 				else:	
-					Qval = self.check(newboard, player) + self.check2(newboard, player) + self.checkfirstmoves(newboard, player)
-					normQval = Qval/float(100)
+					normQval = self.randomPlayout(Board, player)
+					#Qval = self.check(newboard, player) + self.check2(newboard, player) + self.checkfirstmoves(newboard, player)
+					#normQval = Qval/float(100)
 				
 				self.uctTree[chosenchild] = [normQval, 1]
 			
@@ -282,6 +319,7 @@ class uctAI:
 		lMoves = self.legal(Board) #all legal moves
 		childlist = []
 		indexlist = []
+		vallist = [0,0,0,0,0,0,0]
         
 		for col in range(Board.columns):
 			replica = copy.deepcopy(Board) #TODO move this inside loop
@@ -298,18 +336,36 @@ class uctAI:
 		chosenindex = 0
 			
 		maxval = -100 #or is there a better value to put this as? min should be -1 (WHEN LOOKING FOR UPPER BOUND, simulate uctAI)
-			
+		
+		arr = []
 		for ch in childlist:
+			vallist[indexlist[childlist.index(ch)]] = self.uctTree[ch][0] + math.sqrt(float(self.numsteps)/self.uctTree[ch][1])
 			if ( self.uctTree[ch][0] + math.sqrt(float(self.numsteps)/self.uctTree[ch][1]) ) > maxval: #use UCB or Q(s)??
 				maxval = self.uctTree[ch][0] + math.sqrt(float(self.numsteps)/self.uctTree[ch][1])
-				chosenchild = ch
-				chosenindex = indexlist[childlist.index(ch)]
-					
-		if chosenchild == "":
-			print "ERROR NO CHILD CHOSEN"
-            
+				#chosenchild = ch
+				#chosenindex = indexlist[childlist.index(ch)]
 		
-		return chosenindex+1
+				
+		#if chosenchild == "":
+		#	print "ERROR NO CHILD CHOSEN"
+            
+		print vallist
+		
+		for ch in childlist:
+			if ( self.uctTree[ch][0] + math.sqrt(float(self.numsteps)/self.uctTree[ch][1]) ) == maxval:
+				arr.append(indexlist[childlist.index(ch)])
+
+		if (len(arr) > 1):
+			# randomly select one of better moves - need to change later
+			rng = random.SystemRandom()
+			r = rng.randint(0, len(arr) - 1)
+			ret = arr[r] + 1
+		else:
+			ret = arr[0] + 1
+			
+		
+		#return chosenindex + 1
+		return ret
         
 	def backpropogate(self, nodelist, val):
 		#for each node in nodelist, update with newest val
