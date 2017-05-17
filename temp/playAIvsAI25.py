@@ -31,7 +31,8 @@ class play:
 		if (ai == True):
 			opp = decentAI25() #-1
 			opp2 = minimaxAI25() #1
-			depth = 2
+			depth = 1
+			depth2 = 2
 
 		while(self.win == 0):
 			self.b.update()
@@ -39,7 +40,7 @@ class play:
 				if (self.current < 0):
 					#print "--------AI 2's Move-------"
 					
-					self.b.move(self.current, opp2.chooseMove(self.b, self.current, depth))
+					self.b.move(self.current, opp2.chooseMove(self.b, self.current, depth2))
 				elif (self.current > 0):
 
 					self.b.move(self.current, opp.chooseMove(self.b, self.current, depth))
