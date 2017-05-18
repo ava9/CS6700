@@ -29,8 +29,8 @@ class play:
 
 		ai = True
 		if (ai == True):
-			opp = decentAI18() #-1
-			opp2 = minimaxAI18() #1
+			opp = decentAI18() #1
+			opp2 = minimaxAI18() #-1
 			depth = 2
 			depth2 = 4
 

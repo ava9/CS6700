@@ -3,7 +3,7 @@ import os
 
 os.system("mkdir temp")
 
-for i in range(1, 100):
+for i in range(1, 101):
 	os.system("cp decentAI.py temp/")
 	os.system("mv temp/decentAI.py temp/decentAI"+str(i)+".py")
 
@@ -31,8 +31,8 @@ for i in range(1, 100):
 
 os.system("touch temp/output.txt")
 
-for i in range(1, 100):
-	if (i == 100):
+for i in range(1, 101):
+	if (i == 101):
 		os.system("python temp/playAIvsAI"+str(i)+".py >> temp/output.txt")
 	else:
 		os.system("python temp/playAIvsAI"+str(i)+".py >> temp/output.txt &")
