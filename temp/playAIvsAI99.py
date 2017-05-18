@@ -31,21 +31,22 @@ class play:
 		if (ai == True):
 			opp = decentAI99() #-1
 			opp2 = minimaxAI99() #1
-			depth = 1
-			depth2 = 2
+			depth = 2
+			depth2 = 4
 
 		while(self.win == 0):
 			self.b.update()
 			if (ai == True):
 				if (self.current < 0):
 					#print "--------AI 2's Move-------"
-					
+					# 1
 					self.b.move(self.current, opp2.chooseMove(self.b, self.current, depth2))
 				elif (self.current > 0):
 
 					self.b.move(self.current, opp.chooseMove(self.b, self.current, depth))
 					valid = True
 					#print "------AI 1's Move------"
+					# -1
 			elif not ai:
 				valid = True
 
@@ -60,27 +61,27 @@ class play:
 		
 		#print opp.uctTree
 		#opp.writeTree()
-		print"The winner is "
+		#print"The winner is "
 		print self.win
 
-playAgain = True
-count = 0
-while(playAgain == True):
-	count = count + 1
-	p = play()
-	if (count <=50):
-		p.begin(0)
-	else:
-		p.begin(1)
-	#print "Would you like to play again? Enter: [y/n]"
+# playAgain = True
+# count = 0
+# while(playAgain == True):
+# 	count = count + 1
+p = play()
+# 	if (count <=50):
+p.begin(0)
+# 	else:
+# 		p.begin(1)
+# 	#print "Would you like to play again? Enter: [y/n]"
 	
-	#note that if user enters anything other than "n", user plays again
-	#if (raw_input() == "n"):
-		#playAgain = False
-	if (count > 100):
-		playAgain = False
-	else:
-		p.b.setUp()
+# 	#note that if user enters anything other than "n", user plays again
+# 	#if (raw_input() == "n"):
+# 		#playAgain = False
+# 	if (count > 100):
+# 		playAgain = False
+# 	else:
+p.b.setUp()
 
 
 

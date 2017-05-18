@@ -36,3 +36,5 @@ for i in range(1, 100):
 		os.system("python temp/playAIvsAI"+str(i)+".py >> temp/output.txt")
 	else:
 		os.system("python temp/playAIvsAI"+str(i)+".py >> temp/output.txt &")
+
+#os.system("fgrep -o "-" temp/output.txt | wc -l")
