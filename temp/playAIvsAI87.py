@@ -31,8 +31,8 @@ class play:
 		if (ai == True):
 			opp = decentAI87() #1
 			opp2 = minimaxAI87() #-1
-			depth = 2
-			depth2 = 4
+			depth = 3
+			depth2 = 6
 
 		while(self.win == 0):
 			self.b.update()
