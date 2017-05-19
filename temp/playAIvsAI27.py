@@ -1,9 +1,10 @@
 from board import board
 from human import humanInput
-from decentAI27 import decentAI27
+from decentAI import decentAI
 from randomAI import randomAI
 from inorderAI import inorderAI
 from minimaxAI27 import minimaxAI27
+from miniAIb27 import miniAIb27
 from uctAI import uctAI
 import random
 
@@ -29,13 +30,16 @@ class play:
 
 		ai = True
 		if (ai == True):
-			opp = decentAI27() #1
-			opp2 = minimaxAI27() #-1
-			depth = 2
-			depth2 = 4
-
+			opp = minimaxAI27() #1
+			opp2 = miniAIb27() #-1
+			depth = 4
+			depth2 = 5
+		
 		while(self.win == 0):
 			self.b.update()
+			if self.b.boardFull() == True:
+				break
+
 			if (ai == True):
 				if (self.current < 0):
 					#print "--------AI 2's Move-------"

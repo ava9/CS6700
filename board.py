@@ -95,8 +95,8 @@ class board:
 			arr.append(n)
 			n = ""
 
-		for s in range(len(arr)):
-			print arr.pop(-1)
+		#for s in range(len(arr)):
+			#print arr.pop(-1)
 
 	# insert player move on board
 	def move(self, player, col):
