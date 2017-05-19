@@ -1,6 +1,6 @@
 import copy
 import random
-class randomAI:
+class randomAI66:
 	
 	# check if legal move
 	def legal(self, board):

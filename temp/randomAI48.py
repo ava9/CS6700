@@ -1,11 +1,7 @@
 import copy
 import random
-class inorderAI:
-	currcol = 0
+class randomAI48:
 	
-	def __init__(self):
-		self.currcol = 1
-		
 	# check if legal move
 	def legal(self, board):
 		arr = [0, 0, 0, 0, 0, 0, 0]
@@ -117,15 +113,9 @@ class inorderAI:
 		return m
 
 	def chooseMove(self, board, opp, depth):
-		ret = self.currcol
-		self.currcol = (self.currcol+1) % 7 
-		
-		#print "HELLLLOOO"
-		#print self.currcol
+		ret = random.randint(0, board.columns-1)
 		lMoves = self.legal(board)
 		while (lMoves[ret] == False):
-			ret = self.currcol
+			ret = random.randint(0, board.columns-1)
             
-			self.currcol = (self.currcol+1) % 7 
-			
-		return ret
+		return (ret + 1)
