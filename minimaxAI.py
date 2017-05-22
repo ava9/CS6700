@@ -12,6 +12,20 @@ class minimaxAI:
 				arr[c] = True
 		return arr
 	
+	def checkfirstmoves(self, board, player):
+		b = board.getBoard()
+		ret = 0
+        
+		if b[3][0] == player:
+			ret = ret + .2
+		if b[2][0] != ((-1)*player):
+			ret = ret + .05
+		if b[4][0] != ((-1)*player):
+			ret = ret + .05
+			
+		return ret
+       
+	
 	# checks how many two-in-a-rows there are
 	def check2(self, board, player):
 		b = board.getBoard()
@@ -19,7 +33,7 @@ class minimaxAI:
 
 		#vertical check
 		for c in range(len(b)): 
-			for r in range(len(b[c]) - 2): 
+			for r in range(len(b[c]) - 1): 
 				if (b[c][r] == player):
 					if (b[c][r+1] == player):
 						
@@ -30,7 +44,7 @@ class minimaxAI:
 					continue
 				
 		#horizontal check
-		for c in range(len(b) - 2): 
+		for c in range(len(b) - 1): 
 			for r in range(len(b[c])): 
 				if (b[c][r] == player):
 					if (b[c+1][r] == player):
@@ -41,20 +55,20 @@ class minimaxAI:
 					continue
 				
 		#left to right, bottom to top / diagonal check
-		for c in range(len(b) - 2): 
-			for r in range(len(b) - 3): 
+		for c in range(len(b) - 1): 
+			for r in range(len(b[c]) - 2): 
 				if (b[c][r] == player):
 					if (b[c+1][r+1] == player):
 						
-						ret = ret + .5	
+						ret = ret + .5
 					else: 
 						continue
 				else:
 					continue
 
 		#left to right, top to bottom \ diagonal check
-		for c in range(len(b) - 1, 1, -1): 
-			for r in range(len(b[c]) - 2): 
+		for c in range(len(b) - 1, 0, -1): 
+			for r in range(len(b[c]) - 1): 
 				if (b[c][r] == player):
 					if (b[c-1][r+1] == player):
 						ret = ret + .5
@@ -73,7 +87,7 @@ class minimaxAI:
 
 		#vertical check
 		for c in range(len(b)): 
-			for r in range(len(b[c]) - 3): 
+			for r in range(len(b[c]) - 2): 
 				if (b[c][r] == player):
 					if (b[c][r+1] == player):
 						if (b[c][r+2] == player):
@@ -86,7 +100,7 @@ class minimaxAI:
 					continue
 
 		#horizontal check
-		for c in range(len(b) - 3): 
+		for c in range(len(b) - 2): 
 			for r in range(len(b[c])): 
 				if (b[c][r] == player):
 					if (b[c+1][r] == player):
@@ -100,8 +114,8 @@ class minimaxAI:
 					continue
 
 		#left to right, bottom to top / diagonal check
-		for c in range(len(b) - 3): 
-			for r in range(len(b) - 4): 
+		for c in range(len(b) - 2): 
+			for r in range(len(b[c]) - 3): 
 				if (b[c][r] == player):
 					if (b[c+1][r+1] == player):
 						if (b[c+2][r+2] == player):
@@ -114,8 +128,8 @@ class minimaxAI:
 					continue
 
 		#left to right, top to bottom \ diagonal check
-		for c in range(len(b) - 1, 2, -1): 
-			for r in range(len(b[c]) - 3): 
+		for c in range(len(b) - 1, 1, -1): 
+			for r in range(len(b[c]) - 2): 
 				if (b[c][r] == player):
 					if (b[c-1][r+1] == player):
 						if (b[c-2][r+2] == player):
@@ -183,8 +197,9 @@ class minimaxAI:
 
 		#if (depth <= 0):
 		#	return [0, 0, 0, 0, 0, 0, 0]
-
+		 
 		for c in range(board.columns):
+			
 			replica = copy.deepcopy(board)
 			if (not replica.colFull(c+1)):
 				replica.move(player, c+1)
@@ -195,13 +210,14 @@ class minimaxAI:
 					
 					#return m
 				elif (depth == 0):
-					m[c] = self.check2(replica, player) + self.check(replica, player)
+					m[c] = self.check2(replica, player) + self.check(replica, player) + self.checkfirstmoves(replica, player)
 				
 				#elif (depth == 1):
 					#m[c] = (-1)*self.check(replica, opp)
 				
 				else:
 					tempm = self.minimaxMoves(replica, opp, depth-1)
+					#print tempm
 					tempval = (-1)*max(tempm) #first take first occurence ( bug ), then take random occurence
 					
 					
@@ -213,7 +229,7 @@ class minimaxAI:
 		
 	def chooseMove(self, board, opp, depth):
 		aMoves = self.minimaxMoves(board, opp, depth) 
-		#print aMoves
+		print aMoves
 		maxScore = max(aMoves)
 		lMoves = self.legal(board)       
 		arr = []

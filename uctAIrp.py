@@ -40,7 +40,7 @@ class uctAIrp:
 
 		#vertical check
 		for c in range(len(b)): 
-			for r in range(len(b[c]) - 2): 
+			for r in range(len(b[c]) - 1): 
 				if (b[c][r] == player):
 					if (b[c][r+1] == player):
 						
@@ -51,7 +51,7 @@ class uctAIrp:
 					continue
 				
 		#horizontal check
-		for c in range(len(b) - 2): 
+		for c in range(len(b) - 1): 
 			for r in range(len(b[c])): 
 				if (b[c][r] == player):
 					if (b[c+1][r] == player):
@@ -62,8 +62,8 @@ class uctAIrp:
 					continue
 				
 		#left to right, bottom to top / diagonal check
-		for c in range(len(b) - 2): 
-			for r in range(len(b) - 3): 
+		for c in range(len(b) - 1): 
+			for r in range(len(b) - 2): 
 				if (b[c][r] == player):
 					if (b[c+1][r+1] == player):
 						
@@ -74,8 +74,8 @@ class uctAIrp:
 					continue
 
 		#left to right, top to bottom \ diagonal check
-		for c in range(len(b) - 1, 1, -1): 
-			for r in range(len(b[c]) - 2): 
+		for c in range(len(b) - 1, 0, -1): 
+			for r in range(len(b[c]) - 1): 
 				if (b[c][r] == player):
 					if (b[c-1][r+1] == player):
 						ret = ret + .5
@@ -93,7 +93,7 @@ class uctAIrp:
 
 		#vertical check
 		for c in range(len(b)): 
-			for r in range(len(b[c]) - 3): 
+			for r in range(len(b[c]) - 2): 
 				if (b[c][r] == player):
 					if (b[c][r+1] == player):
 						if (b[c][r+2] == player):
@@ -106,7 +106,7 @@ class uctAIrp:
 					continue
 
 		#horizontal check
-		for c in range(len(b) - 3): 
+		for c in range(len(b) - 2): 
 			for r in range(len(b[c])): 
 				if (b[c][r] == player):
 					if (b[c+1][r] == player):
@@ -120,8 +120,8 @@ class uctAIrp:
 					continue
 
 		#left to right, bottom to top / diagonal check
-		for c in range(len(b) - 3): 
-			for r in range(len(b) - 4): 
+		for c in range(len(b) - 2): 
+			for r in range(len(b) - 3): 
 				if (b[c][r] == player):
 					if (b[c+1][r+1] == player):
 						if (b[c+2][r+2] == player):
@@ -134,8 +134,8 @@ class uctAIrp:
 					continue
 
 		#left to right, top to bottom \ diagonal check
-		for c in range(len(b) - 1, 2, -1): 
-			for r in range(len(b[c]) - 3): 
+		for c in range(len(b) - 1, 1, -1): 
+			for r in range(len(b[c]) - 2): 
 				if (b[c][r] == player):
 					if (b[c-1][r+1] == player):
 						if (b[c-2][r+2] == player):
@@ -177,7 +177,7 @@ class uctAIrp:
 			else:
 				move = self.randomMove(currboard, -1*player)
 				replica = copy.deepcopy(currboard)
-				replica.move(player, move)
+				replica.move(-1*player, move)
 				myturn = 1
 				currboard = copy.deepcopy(replica)
 		
@@ -205,7 +205,7 @@ class uctAIrp:
 		replica = copy.deepcopy(Board)
 		
 		iters = 0
-		while (iters < 1995):
+		while (iters < 343):
 			#if nodelist has odd length, look for upper bound, else look for lower bound
 			#print currboard.columns #DEBUG 
 			lMoves = self.legal(currboard) #all legal moves
@@ -220,7 +220,6 @@ class uctAIrp:
 					indexlist.append(col)
 					
 					
-			#BUG BUG BUG WHAT IF THERE ARE NO LEGAL MOVES	OKAY FIXED 
 			if len(childlist) == 0:
 				#then the board is full and it's a draw (val = 0)
 				#print "NO LEGAL MOVES"
@@ -290,7 +289,7 @@ class uctAIrp:
 					normQval = self.randomPlayout(Board, player)
 					#Qval = self.check(newboard, player) + self.check2(newboard, player) + self.checkfirstmoves(newboard, player)
 					#normQval = Qval/float(100)
-				
+				#print normQval
 				self.uctTree[chosenchild] = [normQval, 1]
 			
 				# now update everything back up the tree using the nodelist
@@ -339,9 +338,9 @@ class uctAIrp:
 		
 		arr = []
 		for ch in childlist:
-			vallist[indexlist[childlist.index(ch)]] = self.uctTree[ch][0] + math.sqrt(float(self.numsteps)/self.uctTree[ch][1])
-			if ( self.uctTree[ch][0] + math.sqrt(float(self.numsteps)/self.uctTree[ch][1]) ) > maxval: #use UCB or Q(s)??
-				maxval = self.uctTree[ch][0] + math.sqrt(float(self.numsteps)/self.uctTree[ch][1])
+			vallist[indexlist[childlist.index(ch)]] = self.uctTree[ch][0] #+ math.sqrt(float(self.numsteps)/self.uctTree[ch][1])
+			if ( self.uctTree[ch][0] ) > maxval: #use UCB or Q(s)??
+				maxval = self.uctTree[ch][0] #+ math.sqrt(float(self.numsteps)/self.uctTree[ch][1])
 				#chosenchild = ch
 				#chosenindex = indexlist[childlist.index(ch)]
 		
@@ -352,7 +351,7 @@ class uctAIrp:
 		print vallist
 		
 		for ch in childlist:
-			if ( self.uctTree[ch][0] + math.sqrt(float(self.numsteps)/self.uctTree[ch][1]) ) == maxval:
+			if ( self.uctTree[ch][0] ) == maxval:
 				arr.append(indexlist[childlist.index(ch)])
 
 		if (len(arr) > 1):
@@ -372,7 +371,7 @@ class uctAIrp:
 		for n in nodelist:
 			oldQ = self.uctTree[n][0]
 			newQ = oldQ + (val-oldQ)/float(self.uctTree[n][1])
-			self.uctTree[n][0] = oldQ
+			self.uctTree[n][0] = newQ
 			self.uctTree[n][1] = self.uctTree[n][1] + 1
 		
 		

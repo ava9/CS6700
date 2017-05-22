@@ -30,7 +30,7 @@ class play:
 
 		ai = True
 		if (ai == True):
-			opp = uctAIrp()
+			opp = uctAI()
 			depth = 3
 			
 		draw = 0	

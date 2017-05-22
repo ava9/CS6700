@@ -39,7 +39,7 @@ class uctAI:
 
 		#vertical check
 		for c in range(len(b)): 
-			for r in range(len(b[c]) - 2): 
+			for r in range(len(b[c]) - 1): 
 				if (b[c][r] == player):
 					if (b[c][r+1] == player):
 						
@@ -50,7 +50,7 @@ class uctAI:
 					continue
 				
 		#horizontal check
-		for c in range(len(b) - 2): 
+		for c in range(len(b) - 1): 
 			for r in range(len(b[c])): 
 				if (b[c][r] == player):
 					if (b[c+1][r] == player):
@@ -61,20 +61,20 @@ class uctAI:
 					continue
 				
 		#left to right, bottom to top / diagonal check
-		for c in range(len(b) - 2): 
-			for r in range(len(b) - 3): 
+		for c in range(len(b) - 1): 
+			for r in range(len(b[c]) - 2): 
 				if (b[c][r] == player):
 					if (b[c+1][r+1] == player):
 						
-						ret = ret + .5	
+						ret = ret + .5
 					else: 
 						continue
 				else:
 					continue
 
 		#left to right, top to bottom \ diagonal check
-		for c in range(len(b) - 1, 1, -1): 
-			for r in range(len(b[c]) - 2): 
+		for c in range(len(b) - 1, 0, -1): 
+			for r in range(len(b[c]) - 1): 
 				if (b[c][r] == player):
 					if (b[c-1][r+1] == player):
 						ret = ret + .5
@@ -83,16 +83,17 @@ class uctAI:
 				else:
 					continue
 		return ret
-    
-    
-	# checks how many three-in-a-rows there are, one board eval function
+
+
+
+	# checks how many three-in-a-rows there are
 	def check(self, board, player):
 		b = board.getBoard()
 		ret = 0
 
 		#vertical check
 		for c in range(len(b)): 
-			for r in range(len(b[c]) - 3): 
+			for r in range(len(b[c]) - 2): 
 				if (b[c][r] == player):
 					if (b[c][r+1] == player):
 						if (b[c][r+2] == player):
@@ -105,7 +106,7 @@ class uctAI:
 					continue
 
 		#horizontal check
-		for c in range(len(b) - 3): 
+		for c in range(len(b) - 2): 
 			for r in range(len(b[c])): 
 				if (b[c][r] == player):
 					if (b[c+1][r] == player):
@@ -119,8 +120,8 @@ class uctAI:
 					continue
 
 		#left to right, bottom to top / diagonal check
-		for c in range(len(b) - 3): 
-			for r in range(len(b) - 4): 
+		for c in range(len(b) - 2): 
+			for r in range(len(b[c]) - 3): 
 				if (b[c][r] == player):
 					if (b[c+1][r+1] == player):
 						if (b[c+2][r+2] == player):
@@ -133,8 +134,8 @@ class uctAI:
 					continue
 
 		#left to right, top to bottom \ diagonal check
-		for c in range(len(b) - 1, 2, -1): 
-			for r in range(len(b[c]) - 3): 
+		for c in range(len(b) - 1, 1, -1): 
+			for r in range(len(b[c]) - 2): 
 				if (b[c][r] == player):
 					if (b[c-1][r+1] == player):
 						if (b[c-2][r+2] == player):
@@ -163,13 +164,13 @@ class uctAI:
 		currboard = Board
 		
 		Boardval = self.check(Board, player) + self.check2(Board, player) + self.checkfirstmoves(Board, player)
-		normBoardval = Boardval/float(100)
+		normBoardval = Boardval/float(10)
 		
 		self.uctTree[Board.tostring()] = [normBoardval, 1]
 		replica = copy.deepcopy(Board)
 		
 		iters = 0
-		while (iters < 220):
+		while (iters < 343):
 			#if nodelist has odd length, look for upper bound, else look for lower bound
 			#print currboard.columns #DEBUG 
 			lMoves = self.legal(currboard) #all legal moves
@@ -247,12 +248,12 @@ class uctAI:
 				
 				#check if board is win state or lose state, else use board eval function
 				if (newboard.winner(player) == player):
-					normQval = 1
+					normQval = 10
 				elif (newboard.winner((-1)*player) == (-1)*player):
-					normQval = -1
+					normQval = -10
 				else:	
 					Qval = self.check(newboard, player) + self.check2(newboard, player) + self.checkfirstmoves(newboard, player)
-					normQval = Qval/float(100)
+					normQval = Qval/float(10)
 				
 				self.uctTree[chosenchild] = [normQval, 1]
 			
@@ -282,6 +283,7 @@ class uctAI:
 		lMoves = self.legal(Board) #all legal moves
 		childlist = []
 		indexlist = []
+		vallist = [0,0,0,0,0,0,0]
         
 		for col in range(Board.columns):
 			replica = copy.deepcopy(Board) #TODO move this inside loop
@@ -298,25 +300,57 @@ class uctAI:
 		chosenindex = 0
 			
 		maxval = -100 #or is there a better value to put this as? min should be -1 (WHEN LOOKING FOR UPPER BOUND, simulate uctAI)
-			
-		for ch in childlist:
-			if ( self.uctTree[ch][0] + math.sqrt(float(self.numsteps)/self.uctTree[ch][1]) ) > maxval: #use UCB or Q(s)??
-				maxval = self.uctTree[ch][0] + math.sqrt(float(self.numsteps)/self.uctTree[ch][1])
-				chosenchild = ch
-				chosenindex = indexlist[childlist.index(ch)]
-					
-		if chosenchild == "":
-			print "ERROR NO CHILD CHOSEN"
-            
 		
-		return chosenindex+1
-        
+		arr = []
+		for ch in childlist:
+			vallist[indexlist[childlist.index(ch)]] = self.uctTree[ch][0] #+ math.sqrt(float(self.numsteps)/self.uctTree[ch][1])
+			if ( self.uctTree[ch][0] ) > maxval: #use UCB or Q(s)??
+				maxval = self.uctTree[ch][0] #+ math.sqrt(float(self.numsteps)/self.uctTree[ch][1])
+				#chosenchild = ch
+				#chosenindex = indexlist[childlist.index(ch)]
+		
+				
+		#if chosenchild == "":
+		#	print "ERROR NO CHILD CHOSEN"
+            
+		print vallist
+		
+		for ch in childlist:
+			if ( self.uctTree[ch][0] ) == maxval:
+				arr.append(indexlist[childlist.index(ch)])
+
+		if (len(arr) > 1):
+			# randomly select one of better moves - need to change later
+			rng = random.SystemRandom()
+			r = rng.randint(0, len(arr) - 1)
+			ret = arr[r] + 1
+		else:
+			ret = arr[0] + 1
+			
+		
+		#return chosenindex + 1
+		return ret
+
+		#///for ch in childlist:
+		#///	if ( self.uctTree[ch][0] + math.sqrt(float(self.numsteps)/self.uctTree[ch][1]) ) > maxval: #use UCB or Q(s)??
+		#///		maxval = self.uctTree[ch][0] + math.sqrt(float(self.numsteps)/self.uctTree[ch][1])
+		#///		chosenchild = ch
+		#///		chosenindex = indexlist[childlist.index(ch)]
+		#///			
+		#///if chosenchild == "":
+		#///	print "ERROR NO CHILD CHOSEN"
+        #///    
+		#///
+		#///return chosenindex+1
+ 
+       
 	def backpropogate(self, nodelist, val):
 		#for each node in nodelist, update with newest val
 		for n in nodelist:
 			oldQ = self.uctTree[n][0]
 			newQ = oldQ + (val-oldQ)/float(self.uctTree[n][1])
-			self.uctTree[n][0] = oldQ
+			#print newQ
+			self.uctTree[n][0] = newQ
 			self.uctTree[n][1] = self.uctTree[n][1] + 1
 		
 		
