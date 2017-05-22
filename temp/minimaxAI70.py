@@ -12,6 +12,21 @@ class minimaxAI70:
 				arr[c] = True
 		return arr
 	
+	
+	def checkfirstmoves(self, board, player):
+		b = board.getBoard()
+		ret = 0
+        
+		if b[3][0] == player:
+			ret = ret + .2
+		if b[2][0] != ((-1)*player):
+			ret = ret + .05
+		if b[4][0] != ((-1)*player):
+			ret = ret + .05
+			
+		return ret
+
+
 	# checks how many two-in-a-rows there are
 	def check2(self, board, player):
 		b = board.getBoard()
@@ -195,7 +210,7 @@ class minimaxAI70:
 					
 					#return m
 				elif (depth == 0):
-					m[c] = self.check2(replica, player) + self.check(replica, player)
+					m[c] = self.check2(replica, player) + self.check(replica, player) + self.checkfirstmoves(replica, player)
 				
 				#elif (depth == 1):
 					#m[c] = (-1)*self.check(replica, opp)

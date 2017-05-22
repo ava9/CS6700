@@ -113,9 +113,18 @@ class decentAI2:
 		return m
 
 	def chooseMove(self, board, opp, depth):
-		aMoves = self.allMoves(board, opp, depth) 
-		maxScore = max(aMoves)
 		lMoves = self.legal(board)       
+		
+		aMoves = self.allMoves(board, opp, depth) 
+		
+		maxScore = -1000000
+		for i in range(board.columns):
+			if lMoves[i] and (aMoves[i] > maxScore):
+				maxScore = aMoves[i]
+		
+		
+		#maxScore = max(aMoves)
+		#lMoves = self.legal(board)       
 		arr = []
 
 		for c in range(len(lMoves)):
@@ -127,6 +136,12 @@ class decentAI2:
 			r = random.randint(0, len(arr) - 1)
 			ret = arr[r] + 1
 		else:
+			if len(arr) == 0:
+				print "array empty!!!!"
+				print aMoves
+				print maxScore
+				print lMoves
+			
 			ret = arr[0] + 1
 			#BUG there is the problem when there are no legal moves
 
